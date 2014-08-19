@@ -13,23 +13,23 @@ var lone = (new function() {
 	this.resources = {
 		tool: {
 			name: "Tool",
-			amount: 10
+			amount: 0
 			},
 		battery: {
 			name: "Battery",
-			amount: 10
+			amount: 0
 			},
 		hullPart: {
 			name: "Hull Part",
-			amount: 10
+			amount: 0
 			},
 		solarPanel : {
 			name: "Solar Panel",
-			amount: 10
+			amount: 0
 			},
 		electronicPart: {
 			name: "Electronic Part",
-			amount: 10
+			amount: 0
 			}
 	};
 
@@ -99,37 +99,54 @@ var lone = (new function() {
 		$('#board').append(self.getTemplateEmptyRow());
 		var startingField = $('.board_row').children()[13];
 		$(startingField).html('<img alt="rescue_capsule" src="img/elem_rescueCapsule.png">');
+		$(startingField).removeAttr('onmouseover');
 		self.reRender();
 	};
 
 	self.action = function(existingField) {
-		if(!$(existingField).hasClass('active'))
-			return;
-
-		if(typeof self.selectedElement == 'undefined')
-			return;
-
-		self.actionField = existingField;
-		var htmlOfActionField = $(self.actionField).html();
-		if(htmlOfActionField.indexOf("elem_empty.png") == -1)
-			return;
-		if(self.adjascentToSolarArray(existingField))
-			return;
-		if(self.selectedElement.indexOf("hullAdapter") == -1){
-			if((!self.adjacentToHull(existingField) || self.adjacentToForbiddenElements(existingField)))
-				return;
-		}
-		var directions = '';
-		if(self.selectedElement.indexOf("hullAdapter") != -1)
-			directions = self.getAdjacentElementString(existingField);
 		
+		self.actionField = existingField;
 		
 		if(!self.areEnoughResourcesAvailable())
 			return;
 		
+		if(!self.isClickedFieldAllowed(existingField))
+			return;
+		
+		var directions = '';
+		if(self.selectedElement.indexOf("hullAdapter") != -1)
+			directions = self.getAdjacentElementString(existingField);
+		
 		$(self.actionField).html('<img alt="'+self.selectedElement+'" src="./img/'+self.selectedElement+directions+'.png">');
+		
 		self.checkIfNewRowIsNeeded();
 		self.reRender();
+	};
+	
+	/**
+	 * Checks if the clicked Field (the actionField) is able to becomne the selected Element
+	 */
+	self.isClickedFieldAllowed = function(existingField){
+		if(!$(existingField).hasClass('active'))
+			return false;
+
+		if(typeof self.selectedElement == 'undefined')
+			return false;
+		
+		if(!typeof self.actionField == 'undefined'){
+			var htmlOfActionField = $(self.actionField).html();
+			if(htmlOfActionField.indexOf("elem_empty.png") == -1)
+				return false;
+		}
+		
+		if(self.adjascentToSolarArray(existingField))
+			return false;
+		if(self.selectedElement.indexOf("hullAdapter") == -1){
+			if((!self.adjacentToHull(existingField) || self.adjacentToForbiddenElements(existingField)))
+				return false;
+		}
+		
+		return true;
 	};
 	
 	self.areEnoughResourcesAvailable = function(){
@@ -199,6 +216,23 @@ var lone = (new function() {
 		});
 
 		$(element).children().children().css('border', 'dashed 2px #48F31C');
+		
+		self.highlightValidFields(self.seltectedElement);
+	};
+	
+	/**
+	 * Highlights all Fields on the board where the parameter-element can be placed
+	 */
+	self.highlightValidFields = function(element) {
+		var allFields = $('.board_field');
+		$.each(allFields, function() {
+			if(self.isClickedFieldAllowed(this)){
+				$(this).addClass('highlighted');
+			}else{
+				$(this).removeClass('highlighted');
+			}
+				
+		});
 	};
 
 	self.checkIfNewRowIsNeeded = function() {
@@ -229,6 +263,8 @@ var lone = (new function() {
 					$(field).addClass("active");
 			});
 		});
+		
+		self.highlightValidFields(self.selectedElement);
 		
 		$('#amntBattery').text(self.resources.battery.amount);
 		$('#amntHullPart').text(self.resources.hullPart.amount);
@@ -347,6 +383,26 @@ var lone = (new function() {
 
 	self.hideElement = function(element) {
 		$('#modal_bg').fadeOut('fast');
+	};
+	
+	self.nextTurn = function() {
+		self.turn = self.turn + 1;
+		self.resources.tool.amount += self.generateRandomResource(0.6);
+		self.resources.battery.amount += self.generateRandomResource(0.6);
+		self.resources.hullPart.amount += self.generateRandomResource(0.6);
+		self.resources.solarPanel.amount += self.generateRandomResource(0.6);
+		self.resources.electronicPart.amount += self.generateRandomResource(0.6);
+			
+		self.reRender();
+	};
+	
+	self.generateRandomResource = function(percentage) {
+		var amount = 0;
+		if(Math.random() > percentage){
+			amount = self.generateRandomResource(percentage);
+			return amount+1;
+		}
+		return amount;
 	};
 
 	self.getTemplateEmptyRow = function(){

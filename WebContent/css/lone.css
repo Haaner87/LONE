@@ -31,6 +31,8 @@ hr {
 
 #HUD .element img{
 	border: solid 2px #000000;
+	width: 5vw;
+	height: 5vw;
 }
 
 #HUD .element img:hover{
@@ -44,6 +46,20 @@ hr {
 
 #HUD .resource p {
 	margin: 0.2em 0 0.2em 0;
+}
+
+#nextTurn {
+	text-align: center;
+	vertical-align:middle;
+	margin: 1.5em 0em 0em 0em;
+	padding: 0;
+	background: #000000;
+	border: solid 1px #48F31C;
+	height: 5vw;
+	display: block;
+	cursor: hand;
+    cursor: pointer;
+    opacity: .9;
 }
 
 #board {
@@ -63,7 +79,7 @@ hr {
 	height: 5vw;
 	margin-left: 0px;
 	display: inline-block;
-	background-color: #202020;
+	background-color: #000000;
 }
 
 .board_field.active {
@@ -73,6 +89,14 @@ hr {
 
 .board_field.active :hover {
 	border: solid 2px;
+}
+
+.board_field.highlighted {
+	background-color: #202020;
+}
+
+.board_field.highlighted :hover {
+	background-image: #202020;
 }
 
 .board_field img{
