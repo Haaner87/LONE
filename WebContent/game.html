@@ -16,75 +16,88 @@
 		<div id="HUD">
 			<div class="row">
 				<div class="col-md-1 resource">
-			 		<p>Tools</p>
+			 		<p class="resourceName">Tools</p>
 			 		<img alt="ecube" src="img/tools.png">
 			 		<p id="amntTool">0</p>
 			 	</div>
 				<div class="col-md-1 resource">
-					<p>Batteries</p>
+					<p class="resourceName">Batteries</p>
 					<img alt="ecube" src="img/battery.png">
 					<p id="amntBattery">0</p>
 				</div>
 			  	<div class="col-md-1 resource">
-			  		<p>Hull Part</p>
+			  		<p class="resourceName">Hull Part</p>
 			  		<img alt="ecube" src="img/hull.png">
 			  		<p id="amntHullPart">0</p>
 			  	</div>
 			  	<div class="col-md-1 resource">
-			 		<p>Solar Panel</p>
+			 		<p class="resourceName">Solar Panel</p>
 			 		<img alt="ecube" src="img/solar.png">
 			 		<p id="amntSolarPanel">0</p>
 			 	</div>
 			  	<div class="col-md-1 resource">
-			  		<p>Electronic Part</p>
+			  		<p class="resourceName">Electronic Part</p>
 			  		<img alt="ecube" src="img/elec.png">
 			  		<p id="amntElectronicPart">0</p>
 			  	</div>
-		  		<div id ="amntPoints" class="col-md-1 col-md-offset-2">x points</div>
-		  		<div id="amntTurns" class="col-md-1 col-md-offset-2">Turn x</div>
-		  		<div class="col-md-1" onclick="lone.showModal(this);">Cheat Sheet</div>
+		  		<div id ="amntPoints" class="col-md-1 col-md-offset-2">
+		  			<p>x points</p>
+		  		</div>
+		  		<div class="col-md-1">
+		  			<div id="amntTurns">
+		  				<p>Turn x</p>
+		  			</div>
+		  		</div>
+		  		<div class="col-md-1 col-md-offset-1">
+			  		<div class="button" id="nextTurn" onclick="lone.nextTurn();">
+			  			<p>next Turn</p>
+			  		</div>
+		  		</div>
+		  		<div class="col-md-1">
+		  			<div class="button" onclick="lone.showModal(this);">
+			  			<p>Show Cheat Sheet</p>
+			  		</div>
+		  		</div>
 			</div>
 			<hr>
 			<div class="row">
 				<div class="col-md-1 element" id="elem_hullAdapter" onclick="lone.selectElement(this);">
-					<span>Hull Adapter
+						<p>Hull Adapter</p>
 						<img alt="Hull Adapter" src="img/elem_hullAdapter.png">
-					</span>
 				</div>
 				<div class="col-md-1 element" id="elem_solarArray" onclick="lone.selectElement(this);">
-					<span>Solar Array
+						<p>Solar Array</p>
 						<img alt="Solar Array" src="img/elem_solarArray.png">
-					</span>
 				</div>
 				<div class="col-md-1 element" id="elem_foodLab" onclick="lone.selectElement(this);">
-					<span>Food Lab
+						<p>Food Lab</p>
 						<img alt="Food Lab" src="img/elem_foodLab.png">
-					</span>
 				</div>
 				<div class="col-md-1 element" id="elem_plasmaShield" onclick="lone.selectElement(this);">
-					<span>Plasma Shield
+						<p>Plasma Shield</p>
 						<img alt="Plasma Shield" src="img/elem_plasmaShield.png">
-					</span>
 				</div>
 				<div class="col-md-1 element" id="elem_energyCube" onclick="lone.selectElement(this);">
-					<span>Energy Cube
+						<p>Energy Cube</p>
 						<img alt="Energy Cube" src="img/elem_energyCube.png">
-					</span>
 				</div>
 				<div class="col-md-1 element" id="elem_reactor" onclick="lone.selectElement(this);">
-					<span>Reactor
+						<p>Reactor</p>
 						<img alt="Reactor" src="img/elem_reactor.png">
-					</span>
 				</div>
 				<div class="col-md-1 element" id="elem_commRoom" onclick="lone.selectElement(this);">
-					<span>Comm Room
+						<p>Comm Room</p>
 						<img alt="Comm Room" src="img/elem_commRoom.png">
-					</span>
 				</div>
-				<div class="col-md-1" id="nextTurn" onclick="lone.nextTurn();">
-				      <div>Next Turn</div>
+				<div class="col-md-5" id="statusLogContainer">
+				<span>Status log</span>
+					<div id="log">
+						<p id="logRowOne"></p>
+						<p id="logRowTwo"></p>
+						<p id="logRowThree"></p>
+						<p id="logRowFour"></p>
+					</div>
 				</div>
-				<div class="col-md-1 col-md-offset-1"></div>
 			</div>
 		</div>
 		<div id="board">

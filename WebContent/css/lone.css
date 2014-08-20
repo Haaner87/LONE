@@ -11,6 +11,32 @@ body{
 	font-family: 'minecraftia';
 	background-color: #000000;
 	color: #48F31C;
+	-moz-user-select:-moz-none;
+    -moz-user-select:none;
+    -o-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+}
+
+#statusLogContainer {
+	margin-top: 0.5em;
+	font-size: 0.72em;
+}
+
+#log {
+	margin: 1.7em 0.2em 0.2em 0.52em;
+	padding: 0 0.5em 0 0.5em;
+	background: #000000;
+	border: solid 1px #48F31C;
+	height: 5vw;
+	display: block;
+}
+
+#log p{
+	margin: 0;
+	padding: 0;
 }
 
 #HUD {
@@ -24,15 +50,21 @@ hr {
 	border-top: 1px solid #48F31C;
 }
 
-#HUD .element span{
-	font-size: 0.52em;
+#HUD .element{
+	margin-top: 0.5em;
+	font-size: 0.72em;
 	text-align: center;
+}
+
+#HUD .element p{
+	min-height: 2.2vw;
 }
 
 #HUD .element img{
 	border: solid 2px #000000;
 	width: 5vw;
 	height: 5vw;
+	cursor: crosshair;
 }
 
 #HUD .element img:hover{
@@ -40,7 +72,8 @@ hr {
 }
 
 #HUD .resource {
-	font-size: 0.52em;
+	margin-bottom: 0.5em;
+	font-size: 0.72em;
 	text-align: center;
 }
 
@@ -48,18 +81,25 @@ hr {
 	margin: 0.2em 0 0.2em 0;
 }
 
-#nextTurn {
+#HUD .resourceName {
+	min-height: 2.2vw;
+}
+
+.button {
 	text-align: center;
 	vertical-align:middle;
-	margin: 1.5em 0em 0em 0em;
+	border: solid 1px #48F31C;
+	display: block;
+	cursor: crosshair;
+	width: 5vw;
+	height: 5vw;
 	padding: 0;
 	background: #000000;
-	border: solid 1px #48F31C;
-	height: 5vw;
-	display: block;
-	cursor: hand;
-    cursor: pointer;
-    opacity: .9;
+	margin-top: 0.5em;
+}
+
+.button:hover {
+	border: solid 2px #48F31C;
 }
 
 #board {
@@ -83,8 +123,7 @@ hr {
 }
 
 .board_field.active {
-	border: dashed 2px;
-	border-color: #303030;
+	cursor: crosshair;
 }
 
 .board_field.active :hover {
@@ -93,6 +132,8 @@ hr {
 
 .board_field.highlighted {
 	background-color: #202020;
+	border: dashed 2px;
+	border-color: #303030;
 }
 
 .board_field.highlighted :hover {

@@ -36,48 +36,64 @@ var lone = (new function() {
 	this.elements = {
 		rescueCapsule: {
 			name: "Rescue Capsule",
+			amount: 1,
+			pointValue: 1,
 			buy: function () {
 				self.elements.buyElement(0,0,0,0,0);
 		    	}
 			},
 		hullAdapter: {
 			name: "Hull Adapter",
+			pointValue: 1,
+			amount: 0,
 			buy: function () {
 				self.elements.buyElement(0,0,1,0,0);
 		    	}
 			},
 		solarArray: {
 			name: "Solar Array",
+			pointValue: 5,
+			amount: 0,
 			buy: function () {
 				self.elements.buyElement(0,1,0,3,1);
 		    	}
 			},
 		foodLab: {
 			name: "Food Lab",
+			pointValue: 6,
+			amount: 0,
 			buy: function () {
 				self.elements.buyElement(2,0,1,0,2);
 		    	}
 			},
 		plasmaShield: {
 			name: "Plasma Shield",
+			pointValue: 7,
+			amount: 0,
 			buy: function () {
 				self.elements.buyElement(0,2,0,0,3);
 		    	}
 			},
 		energyCube: {
 			name: "Energy Cube",
+			pointValue: 5,
+			amount: 0,
 			buy: function () {
 				self.elements.buyElement(1,2,0,0,0);
 		    	}
 			},
 		reactor: {
 			name: "Reactor",
+			pointValue: 10,
+			amount: 0,
 			buy: function () {
 				self.elements.buyElement(1,1,1,0,1);
 		    	}
 			},
 		commRoom: {
 			name: "Comm Room",
+			pointValue: 20,
+			amount: 0,
 			buy: function () {
 				self.elements.buyElement(3,1,1,0,4);
 		    	}
@@ -101,6 +117,10 @@ var lone = (new function() {
 		$(startingField).html('<img alt="rescue_capsule" src="img/elem_rescueCapsule.png">');
 		$(startingField).removeAttr('onmouseover');
 		self.reRender();
+		self.fillStatusLog("Welcome Commander...", 1);
+		self.fillStatusLog("Due to a leak your Space Station had to be evacuated", 2);
+		self.fillStatusLog("You are the only survivor", 3);
+		self.fillStatusLog("Collect as much space junk as you need to get back to earth", 4);
 	};
 
 	self.action = function(existingField) {
@@ -117,8 +137,10 @@ var lone = (new function() {
 		if(self.selectedElement.indexOf("hullAdapter") != -1)
 			directions = self.getAdjacentElementString(existingField);
 		
-		$(self.actionField).html('<img alt="'+self.selectedElement+'" src="./img/'+self.selectedElement+directions+'.png">');
+		$(self.actionField).html('<img alt="'+self.selectedElement+'" src="./img/elem_'+self.selectedElement+directions+'.png">');
 		
+		window['lone']['elements'][self.selectedElement]['amount'] += 1;
+		self.calculatePoints();
 		self.checkIfNewRowIsNeeded();
 		self.reRender();
 	};
@@ -150,12 +172,12 @@ var lone = (new function() {
 	};
 	
 	self.areEnoughResourcesAvailable = function(){
-		if(self.selectedElement == 'elem_hullAdapter'){
+		if(self.selectedElement == 'hullAdapter'){
 			if( self.resources.hullPart.amount >= 1){
 				self.elements.hullAdapter.buy();
 				return true;
 			}
-		}else if(self.selectedElement == 'elem_solarArray'){
+		}else if(self.selectedElement == 'solarArray'){
 			if(	self.resources.battery.amount >= 1 &&
 				self.resources.solarPanel.amount >= 3 &&
 				self.resources.electronicPart.amount >= 1)
@@ -163,7 +185,7 @@ var lone = (new function() {
 				self.elements.solarArray.buy();
 				return true;
 			}
-		}else if(self.selectedElement == 'elem_foodLab'){
+		}else if(self.selectedElement == 'foodLab'){
 			if(	self.resources.tool.amount >= 2 &&
 				self.resources.hullPart.amount >= 1 &&
 				self.resources.electronicPart.amount >= 2)
@@ -171,21 +193,21 @@ var lone = (new function() {
 					self.elements.foodLab.buy();
 					return true;
 				}
-		}else if(self.selectedElement == 'elem_plasmaShield'){
+		}else if(self.selectedElement == 'plasmaShield'){
 			if(	self.resources.battery.amount >= 2 &&
 				self.resources.electronicPart.amount >= 3)
 				{
 					self.elements.plasmaShield.buy();
 					return true;
 				}
-		}else if(self.selectedElement == 'elem_energyCube'){
+		}else if(self.selectedElement == 'energyCube'){
 			if(	self.resources.tool.amount >= 1 &&
 				self.resources.battery.amount >= 2)
 				{
 					self.elements.energyCube.buy();
 					return true;
 				}
-		}else if(self.selectedElement == 'elem_reactor'){
+		}else if(self.selectedElement == 'reactor'){
 			if(	self.resources.tool.amount >= 1 &&
 				self.resources.battery.amount >= 1 &&
 				self.resources.hullPart.amount >= 1 &&
@@ -194,7 +216,7 @@ var lone = (new function() {
 					self.elements.reactor.buy();
 					return true;
 				}
-		}else if(self.selectedElement == 'elem_commRoom'){
+		}else if(self.selectedElement == 'commRoom'){
 			if(	self.resources.tool.amount >= 3 &&
 				self.resources.battery.amount >= 1 &&
 				self.resources.hullPart.amount >= 1 &&
@@ -209,7 +231,8 @@ var lone = (new function() {
 	};
 
 	self.selectElement = function(element) {
-		self.selectedElement = $(element).attr('id');
+		var elementID = $(element).attr('id');
+		self.selectedElement = elementID.substring(5);
 		var siblings = $(element).siblings('.element');
 		$.each(siblings, function() {
 			$(this).children().children().css('border', 'solid 2px #000000');
@@ -217,13 +240,13 @@ var lone = (new function() {
 
 		$(element).children().children().css('border', 'dashed 2px #48F31C');
 		
-		self.highlightValidFields(self.seltectedElement);
+		self.highlightValidFields();
 	};
 	
 	/**
 	 * Highlights all Fields on the board where the parameter-element can be placed
 	 */
-	self.highlightValidFields = function(element) {
+	self.highlightValidFields = function() {
 		var allFields = $('.board_field');
 		$.each(allFields, function() {
 			if(self.isClickedFieldAllowed(this)){
@@ -264,7 +287,7 @@ var lone = (new function() {
 			});
 		});
 		
-		self.highlightValidFields(self.selectedElement);
+		self.highlightValidFields();
 		
 		$('#amntBattery').text(self.resources.battery.amount);
 		$('#amntHullPart').text(self.resources.hullPart.amount);
@@ -387,22 +410,63 @@ var lone = (new function() {
 	
 	self.nextTurn = function() {
 		self.turn = self.turn + 1;
-		self.resources.tool.amount += self.generateRandomResource(0.6);
-		self.resources.battery.amount += self.generateRandomResource(0.6);
-		self.resources.hullPart.amount += self.generateRandomResource(0.6);
-		self.resources.solarPanel.amount += self.generateRandomResource(0.6);
-		self.resources.electronicPart.amount += self.generateRandomResource(0.6);
-			
+		self.resources.tool.amount += self.generateRandomResource(0.5);
+		self.resources.battery.amount += self.generateRandomResource(0.5);
+		self.resources.hullPart.amount += self.generateRandomResource(0.5);
+		self.resources.solarPanel.amount += self.generateRandomResource(0.5);
+		self.resources.electronicPart.amount += self.generateRandomResource(0.5);
+		self.calculatePoints();
 		self.reRender();
+	};
+	
+	/**
+	 * calculates the total amount of Points Collected
+	 */
+	self.calculatePoints = function() {
+		var points = 0;
+		points += self.elements.rescueCapsule.amount * self.elements.rescueCapsule.pointValue;
+		points += self.elements.hullAdapter.amount * self.elements.hullAdapter.pointValue;
+		points += self.elements.solarArray.amount * self.elements.solarArray.pointValue;
+		points += self.elements.foodLab.amount * self.elements.foodLab.pointValue;
+		points += self.elements.plasmaShield.amount * self.elements.plasmaShield.pointValue;
+		points += self.elements.energyCube.amount * self.elements.energyCube.pointValue;
+		points += self.elements.reactor.amount * self.elements.reactor.pointValue;
+		points += self.elements.commRoom.amount * self.elements.commRoom.pointValue;
+		points = (points*100 / self.turn+1) -101;
+		self.points = points.toFixed(2);
 	};
 	
 	self.generateRandomResource = function(percentage) {
 		var amount = 0;
-		if(Math.random() > percentage){
+		if(Math.random() < percentage){
 			amount = self.generateRandomResource(percentage);
 			return amount+1;
 		}
 		return amount;
+	};
+	
+	self.fillStatusLog = function(log, row) {
+		if(row == 1){
+			self.fillTextSlow(log, 'logRowOne');
+		}else if(row == 2){
+			self.fillTextSlow(log, 'logRowTwo');
+		}else if(row == 3){
+			self.fillTextSlow(log, 'logRowThree');
+		}else if(row == 4){
+			self.fillTextSlow(log, 'logRowFour');
+		}
+	};
+	
+	self.fillTextSlow = function(text, elementID) {
+	    
+		var textAdder = null;
+		var placeHolder = 0;
+	    textAdder = setInterval(function(){
+	        document.getElementById(elementID).innerHTML += text.charAt(placeHolder);
+	        if (++placeHolder == text.length){
+	            clearInterval(textAdder);
+	        }
+	    }, 100);  
 	};
 
 	self.getTemplateEmptyRow = function(){
